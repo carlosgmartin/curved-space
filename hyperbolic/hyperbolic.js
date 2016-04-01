@@ -127,6 +127,13 @@ document.body.appendChild(canvas);
 var context = canvas.getContext('2d');
 context.lineWidth = .001;
 
+var canvas2 = document.createElement('canvas');
+canvas2.width = 500;
+canvas2.height = 500;
+document.body.appendChild(canvas2);
+var context2 = canvas2.getContext('2d');
+context2.lineWidth = .001;
+
 var position = [.5, 0];
 
 var speed = .02;
@@ -159,5 +166,25 @@ function render() {
     context.stroke();
   }
   context.resetTransform();
+  
+  context2.clearRect(0, 0, canvas.width, canvas.height);
+  context2.translate(canvas.width/2, canvas.height/2);
+  context2.scale(15000, 15000);
+  
+  for (var ray = 0; ray < rays.length; ++ray) {
+    var positions = rays[ray];
+    var distance = 0;
+    var velocity = difference(positions[1], positions[0]);
+    for (var step = 0; step < positions.length; ++step) {
+      var metric = get_metric(positions[step]);
+      if (step > 0) {
+        var displacement = difference(positions[step], positions[step - 1]);
+        distance += norm(displacement, metric);
+      }
+      var screen_position = scale(velocity, distance);
+      context2.fillRect(screen_position[0], screen_position[1], .0001, .0001);
+    }
+  }
+  context2.resetTransform();
 }
 render();
