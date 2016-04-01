@@ -20,24 +20,70 @@ var create_grid = function (major, minor) { /* creates a grid of points based on
         }
     }
 };
-create_grid(8, 64);
+create_grid(8, 32);
+
+
+
+
+
+
+
+var speed = .0001;
+var scaling = 1.002;
+setInterval(function() {
+    if (keys[65]) {
+        var tangent = math.scale(frame.x, -speed);
+        var frame_point = math.exponential(frame.point, tangent);
+        var frame_x = math.transport(frame.point, tangent, frame.x);
+        frame.point = frame_point;
+        frame.x = frame_x;
+    }
+    if (keys[68]) {
+        var tangent = math.scale(frame.x, speed);
+        var frame_point = math.exponential(frame.point, tangent);
+        var frame_x = math.transport(frame.point, tangent, frame.x);
+        frame.point = frame_point;
+        frame.x = frame_x;
+    }
+    if (keys[83]) {
+        var tangent = math.scale(frame.y, speed);
+        var frame_point = math.exponential(frame.point, tangent);
+        var frame_y = math.transport(frame.point, tangent, frame.y);
+        frame.point = frame_point;
+        frame.y = frame_y;
+    }
+    if (keys[87]) {
+        var tangent = math.scale(frame.y, -speed);
+        var frame_point = math.exponential(frame.point, tangent);
+        var frame_y = math.transport(frame.point, tangent, frame.y);
+        frame.point = frame_point;
+        frame.y = frame_y;
+    }
+    if (keys[81]) {
+        if (frame.scale > .13) {
+            frame.scale /= scaling;
+        }
+    }
+    if (keys[69]) {
+        frame.scale *= scaling;
+    }
+    render();
+}, 1000/60);
+
+
 
 
 
 
 
 var canvas = document.getElementById('canvas');
-canvas.width = 100;
-canvas.height = 100;
+canvas.width = 500;
+canvas.height = 500;
 
 var context = canvas.getContext('2d');
 
-
-
-
-
 function render() {
-	requestAnimationFrame(render);
+	//requestAnimationFrame(render);
 
 	context.fillStyle = 'black';
 	context.fillRect(0, 0, canvas.width, canvas.height);
@@ -69,4 +115,12 @@ function render() {
 		document.documentElement.scrollHeight/2 - window.innerHeight/2
 	);
 }
-render();
+//render();
+
+var keys = {};
+addEventListener('keydown', function(event) {
+    keys[event.which] = true;
+});
+addEventListener('keyup', function(event) {
+    keys[event.which] = false;
+});
