@@ -77,8 +77,8 @@ setInterval(function() {
 
 
 var canvas = document.getElementById('canvas');
-canvas.width = 500;
-canvas.height = 500;
+canvas.width = 1000;
+canvas.height = 1000;
 
 var context = canvas.getContext('2d');
 
@@ -134,4 +134,5 @@ addEventListener('keyup', function(event) {
 
 addEventListener('mousewheel', function(event) {
 	frame.scale *= Math.exp(event.wheelDelta / 10000);
+	event.preventDefault();
 });
