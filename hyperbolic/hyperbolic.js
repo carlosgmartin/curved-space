@@ -174,6 +174,14 @@ function render() {
     rays.push(get_ray(position, velocity, 100));
   }
   
+  /* Mirror partner */
+  /* for (var angle = 0; angle < 2*Math.PI; angle += .1) {
+    var v0 = .001 * Math.cos(angle);
+    var v1 = .001 * Math.sin(angle);
+    var dist2 = position[0] * position[0] + position[1] * position[1];
+    rays.push(get_ray([position[0]/dist2, position[1]/dist2], [v0, v1], 500));
+  } */
+  
   for (var ray = 0; ray < rays.length; ++ray) {
     var positions = rays[ray];
     context.beginPath();
