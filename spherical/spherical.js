@@ -20,7 +20,7 @@ var create_grid = function (major, minor) { /* creates a grid of points based on
         }
     }
 };
-//create_grid(8, 64);
+create_grid(8, 64);
 
 var create_sprinkling; /* creates a random sprinkling of points on the sphere using a Gaussian distribution */
 create_sprinkling = function (number) {
@@ -35,7 +35,7 @@ create_sprinkling = function (number) {
         points.push(point);
     }
 };
-create_sprinkling(1000);
+// create_sprinkling(1000);
 
 /* Moving objects */
 var bullets = [];
@@ -149,7 +149,7 @@ function render() {
     context.fillStyle = 'white';
     for (var bullet = 0; bullet < bullets.length; ++bullet) {
     	for (var multiple = -2; multiple <= 2; ++multiple) {
-    		render_point(bullets[bullet].position, multiple, 10);
+    		render_point(bullets[bullet].position, multiple, 5);
     	}
     }
 
