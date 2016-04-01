@@ -35,7 +35,7 @@ function get_metric(position) {
   return result;
 }
 
-/* Returns the connection coefficients */
+/* Returns the connection coefficients (Christoffel symbols) */
 function get_connection(position) {
   var factor = 1;
   for (var i = 0; i < dimensions; ++i) {
@@ -103,3 +103,61 @@ function inner(vector1, vector2, metric) {
 function norm(vector, metric) {
   return Math.sqrt(inner(vector, vector, metric));
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var canvas = document.createElement('canvas');
+canvas.width = 500;
+canvas.height = 500;
+document.body.appendChild(canvas);
+var context = canvas.getContext('2d');
+context.lineWidth = .001;
+
+var position = [.5, 0];
+
+var speed = .02;
+function render() {
+  requestAnimationFrame(render);
+  
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.translate(canvas.width/2, canvas.height/2);
+  context.scale(150, 150);
+  
+  context.beginPath();
+  context.arc(0, 0, 1, 0, 2*Math.PI);
+  context.stroke();
+  
+  var ray_number = 150;
+  var rays = [];
+  for (var angle = 0; angle < 2*Math.PI; angle += 2*Math.PI / ray_number) {
+    var velocity = scale([Math.cos(angle), Math.sin(angle)], speed);
+    rays.push(get_ray(position, velocity, 100));
+  }
+  
+  for (var ray = 0; ray < rays.length; ++ray) {
+    var positions = rays[ray];
+    context.beginPath();
+    context.moveTo(positions[0][0], positions[0][1]);
+    for (var step = 0; step < positions.length; ++step) {
+      var metric = get_metric(positions[step]);
+      context.lineTo(positions[step][0], positions[step][1]);
+    }
+    context.stroke();
+  }
+  context.resetTransform();
+}
+render();
