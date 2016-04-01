@@ -135,6 +135,8 @@ var context2 = canvas2.getContext('2d');
 context2.lineWidth = .001;
 
 var position = [.5, 0];
+var object = [.5, 0];
+var object_radius = .1;
 
 var speed = .02;
 function render() {
@@ -161,6 +163,11 @@ function render() {
     context.moveTo(positions[0][0], positions[0][1]);
     for (var step = 0; step < positions.length; ++step) {
       var metric = get_metric(positions[step]);
+      var object_displacement = difference(positions[step], object);
+      var object_distance = norm(object_displacement, metric);
+      if (object_distance < object_radius) {
+        context.fillRect(positions[step][0], positions[step][1], .01, .01);
+      }
       context.lineTo(positions[step][0], positions[step][1]);
     }
     context.stroke();
@@ -183,6 +190,12 @@ function render() {
       }
       var screen_position = scale(velocity, distance);
       context2.fillRect(screen_position[0], screen_position[1], .0001, .0001);
+      
+      var object_displacement = difference(positions[step], object);
+      var object_distance = norm(object_displacement, metric);
+      if (object_distance < object_radius) {
+        context2.fillRect(screen_position[0], screen_position[1], .0005, .0005);
+      }
     }
   }
   context2.resetTransform();
