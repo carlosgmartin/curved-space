@@ -88,5 +88,28 @@ var math = {
             y: math.radius * math.sin(inclination) * math.cos(azimuth),
             z: math.radius * math.sin(inclination) * math.sin(azimuth)
         };
+    },
+    gaussian: function(mean, standard_deviation) {
+        var y2;
+        var use_last = false;
+        var y1;
+        if(use_last) {
+           y1 = y2;
+           use_last = false;
+        }
+        else {
+            var x1, x2, w, multiplier;
+            do {
+                 x1 = 2.0 * Math.random() - 1.0;
+                 x2 = 2.0 * Math.random() - 1.0;
+                 w  = x1 * x1 + x2 * x2;               
+            } while( w >= 1.0);
+            w = Math.sqrt((-2.0 * Math.log(w))/w);
+            y1 = x1 * w;
+            y2 = x2 * w;
+            use_last = true;
+       }
+
+       return mean + standard_deviation * y1;
     }
 };

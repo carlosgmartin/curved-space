@@ -3,7 +3,7 @@ var frame = {
     point: {x: 1, y: 0, z: 0}, /* where we are */
     x: {x: 0, y: 200, z: 0}, /* where our x direction is */
     y: {x: 0, y: 0, z: 200}, /* where our y direction is */
-    scale: .5 /* how to scale our coordinates */
+    scale: .8 /* how to scale our coordinates */
 };
 
 var points = []; /* points to be rendered */
@@ -20,7 +20,22 @@ var create_grid = function (major, minor) { /* creates a grid of points based on
         }
     }
 };
-create_grid(8, 64);
+//create_grid(8, 64);
+
+var create_sprinkling; /* creates a random sprinkling of points on the sphere using a Gaussian distribution */
+create_sprinkling = function (number) {
+    for (var n = 0; n < number; ++n) {
+        var point = {
+            x: math.gaussian(0, 1),
+            y: math.gaussian(0, 1),
+            z: math.gaussian(0, 1)
+        }
+        point = math.unit(point);
+        point = math.scale(point, math.radius);
+        points.push(point);
+    }
+};
+create_sprinkling(1000);
 
 /* Moving objects */
 var bullets = [];
