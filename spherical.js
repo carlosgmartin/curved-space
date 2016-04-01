@@ -29,7 +29,7 @@ create_grid(8, 64);
 
 
 var speed = .00005;
-var scaling = 1.002;
+var scaling = 1.01;
 setInterval(function() {
     if (keys[65]) {
         var tangent = math.scale(frame.x, -speed);
@@ -82,6 +82,16 @@ canvas.height = 500;
 
 var context = canvas.getContext('2d');
 
+/* The multiple denotes how many times to wrap around the sphere */
+function render_point(point, multiple) {
+	var logarithm = math.extend(math.logarithm(frame.point, point), multiple * 2*Math.PI*math.radius);
+    var x = math.inner(logarithm, frame.x);
+    var y = math.inner(logarithm, frame.y);
+    context.beginPath();
+    context.arc(x, y, 1, 0, 2 * Math.PI);
+    context.fill();
+}
+
 function render() {
 	//requestAnimationFrame(render);
 
@@ -99,14 +109,11 @@ function render() {
 	context.fill();
 
     context.fillStyle = 'white';
-    points.forEach(function(point) {
-        var logarithm = math.logarithm(frame.point, point);
-        var x = math.inner(logarithm, frame.x);
-        var y = math.inner(logarithm, frame.y);
-        context.beginPath();
-        context.arc(x, y, 1, 0, 2 * Math.PI);
-        context.fill();
-    });
+    for (var point = 0; point < points.length; ++point) {
+    	for (var multiple = -2; multiple <= 2; ++multiple) {
+    		render_point(points[point], multiple);
+    	}
+    }
 
 	context.restore();
 
