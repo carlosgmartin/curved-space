@@ -138,6 +138,18 @@ var position = [.5, 0];
 var object = [.5, 0];
 var object_radius = .1;
 
+var keys = {};
+var key_up = 87;
+var key_down = 83;
+var key_left = 65;
+var key_right = 68;
+addEventListener('keydown', function(e) {
+  keys[e.which] = true;
+});
+addEventListener('keyup', function(e) {
+  keys[e.which] = false;
+});
+
 var speed = .02;
 function render() {
   requestAnimationFrame(render);
@@ -149,6 +161,11 @@ function render() {
   context.beginPath();
   context.arc(0, 0, 1, 0, 2*Math.PI);
   context.stroke();
+  
+  if (keys[key_left]) position[0] -= .01;
+  if (keys[key_right]) position[0] += .01;
+  if (keys[key_up]) position[1] -= .01;
+  if (keys[key_down]) position[1] += .01;
   
   var ray_number = 150;
   var rays = [];
