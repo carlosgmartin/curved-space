@@ -46,6 +46,7 @@ var math = {
     rejection: function (vector1, vector2) {
         return math.difference(vector1, math.vector_projection(vector1, vector2));
     },
+    /* Exponential map: Returns point on the sphere given tangent vector and starting point */
     exponential: function (point, tangent) {
         var length = math.norm(tangent);
         var angle = length / math.radius;
@@ -55,17 +56,20 @@ var math = {
         var tangential_vector = math.scale(math.unit(tangent), tangential_component);
         return math.sum(normal_vector, tangential_vector);
     },
+    /* Logarithmic map: Returns tangent vector given starting and ending points */
     logarithm: function (point1, point2) {
         var angle = math.angle(point1, point2);
         var length = angle * math.radius;
         var direction = math.unit(math.rejection(point2, point1));
         return math.scale(direction, length);
     },
+    /* Extends the magnitude of a vector by a fixed length */
     extend: function (vector, scalar) {
         var direction = math.unit(vector);
         var magnitude = math.norm(vector) + scalar;
         return math.scale(direction, magnitude);
     },
+    /* Gives the parallel transport of a vector by a tangent vector */
     transport: function (point, tangent, vector) {
         var length = math.norm(tangent);
         var angle = length / math.radius;
@@ -82,6 +86,7 @@ var math = {
         var tangential_vector2 = math.scale(tangential_direction, tangential_component2);
         return math.sum(rest, math.sum(normal_vector2, tangential_vector2));
     },
+    /* Converts spherical coordinates (azimuth and inclination) to 3D ambient Cartesian coordinates */
     from_spherical: function (azimuth, inclination) {
         return {
             x: math.radius * math.cos(inclination),
@@ -89,6 +94,7 @@ var math = {
             z: math.radius * math.sin(inclination) * math.sin(azimuth)
         };
     },
+    /* Returns a random number generated from a Gaussian distribution */
     gaussian: function(mean, standard_deviation) {
         var y2;
         var use_last = false;
