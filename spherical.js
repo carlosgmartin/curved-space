@@ -3,7 +3,7 @@ var frame = {
     point: {x: 1, y: 0, z: 0}, /* where we are */
     x: {x: 0, y: 200, z: 0}, /* where our x direction is */
     y: {x: 0, y: 0, z: 200}, /* where our y direction is */
-    scale: 1 /* how to scale our coordinates */
+    scale: .5 /* how to scale our coordinates */
 };
 
 var points = []; /* points to be rendered */
@@ -20,7 +20,7 @@ var create_grid = function (major, minor) { /* creates a grid of points based on
         }
     }
 };
-create_grid(8, 32);
+create_grid(8, 64);
 
 
 
@@ -28,7 +28,7 @@ create_grid(8, 32);
 
 
 
-var speed = .0001;
+var speed = .00005;
 var scaling = 1.002;
 setInterval(function() {
     if (keys[65]) {
@@ -123,4 +123,8 @@ addEventListener('keydown', function(event) {
 });
 addEventListener('keyup', function(event) {
     keys[event.which] = false;
+});
+
+addEventListener('mousewheel', function(event) {
+	frame.scale *= Math.exp(event.wheelDelta / 10000);
 });
