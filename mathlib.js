@@ -82,7 +82,7 @@ var math = {
         var tangential_vector2 = math.scale(tangential_direction, tangential_component2);
         return math.sum(rest, math.sum(normal_vector2, tangential_vector2));
     },
-    fromspherical: function (azimuth, inclination) {
+    from_spherical: function (azimuth, inclination) {
         return {
             x: math.radius * math.cos(inclination),
             y: math.radius * math.sin(inclination) * math.cos(azimuth),
