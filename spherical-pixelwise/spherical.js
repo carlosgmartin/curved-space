@@ -1,6 +1,6 @@
 var canvas = document.getElementById('canvas');
-canvas.width = 500;
-canvas.height = 500;
+canvas.width = 400;
+canvas.height = 400;
 var context = canvas.getContext('2d');
 
 var frame_scale = 50;
