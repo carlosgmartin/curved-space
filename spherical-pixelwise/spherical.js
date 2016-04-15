@@ -28,10 +28,10 @@ function render()
     context.scale(frame.scale, frame.scale);
 
     context.fillStyle = 'red';
-    var dx = .05;
-    var dy = .05;
-    var size_x = 10;
-    var size_y = 10;
+    var dx = 1/frame.scale * 2;
+    var dy = 1/frame.scale * 2;
+    var size_x = 1/frame.scale * canvas.width/2;
+    var size_y = 1/frame.scale * canvas.height/2;
     for (var pixel_x = -size_x; pixel_x < size_x; pixel_x += dx)
     {
         for (var pixel_y = -size_y; pixel_y < size_y; pixel_y += dy)
