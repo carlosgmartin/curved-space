@@ -45,8 +45,9 @@ function render_pixel()
             var point_y = frame_point.y * normal_component + tangent.y / length * tangential_component;
             var point_z = frame_point.z * normal_component + tangent.z / length * tangential_component;
 
-            var angle = Math.acos(Math.abs(point_x * disc.x + point_y * disc.y + point_z * disc.z));
 
+
+            var angle = Math.acos(Math.abs(point_x * disc.x + point_y * disc.y + point_z * disc.z));
             if (angle < disc_radius)
             {
                 //data[index++] = 255;
@@ -57,7 +58,14 @@ function render_pixel()
             {
                 data[index++] = 0; // red
             }
-            data[index++] = 0; // green
+            if (point_x > 0)
+            {
+                data[index++] = 30; // green
+            }
+            else
+            {
+                data[index++] = 0;
+            }
             data[index++] = 0; // blue
             data[index++] = 255;
         }
