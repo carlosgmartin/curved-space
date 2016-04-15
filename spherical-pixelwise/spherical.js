@@ -1,17 +1,79 @@
 var canvas = document.getElementById('canvas');
-canvas.width = 1000;
-canvas.height = 1000;
+canvas.width = 500;
+canvas.height = 500;
 var context = canvas.getContext('2d');
 
-var frame = {
-    point: {x: 1, y: 0, z: 0},
-    x: {x: 0, y: 1, z: 0},
-    y: {x: 0, y: 0, z: 1},
-    scale: 50
-};
+var frame_scale = 50;
+var frame_point = {x: 1, y: 0, z: 0};
+var frame_x = {x: 0, y: 1, z: 0};
+var frame_y = {x: 0, y: 0, z: 1};
 
 var disc = {x: 0, y: 1, z: 0};
-var disc_radius = .2;
+// var disc_radius = .2;
+var disc_radius = .5;
+
+
+
+
+
+
+
+var width = canvas.width;
+var height = canvas.height;
+var image_data = context.createImageData(width, height);
+var data = image_data.data;
+function render_pixel()
+{
+    var index = 0;
+    for (var j = 0; j < height; ++j) {
+        for (var i = 0; i < width; ++i) {
+            var pixel_x = (i - width/2) / width * frame_scale;
+            var pixel_y = (j - height/2) / height * frame_scale;
+
+
+
+
+            var tangent = {
+                x: frame_x.x * pixel_x + frame_y.x * pixel_y,
+                y: frame_x.y * pixel_x + frame_y.y * pixel_y,
+                z: frame_x.z * pixel_x + frame_y.z * pixel_y
+            };
+            var length = Math.sqrt(tangent.x * tangent.x + tangent.y * tangent.y + tangent.z * tangent.z);
+            var normal_component = Math.cos(length);
+            var tangential_component = Math.sin(length);
+            var point_x = frame_point.x * normal_component + tangent.x / length * tangential_component;
+            var point_y = frame_point.y * normal_component + tangent.y / length * tangential_component;
+            var point_z = frame_point.z * normal_component + tangent.z / length * tangential_component;
+
+            var angle = Math.acos(Math.abs(point_x * disc.x + point_y * disc.y + point_z * disc.z));
+
+            if (angle < disc_radius)
+            {
+                //data[index++] = 255;
+                var y = 1 - (angle * angle) / (disc_radius * disc_radius);
+                data[index++] = y * 255; // red
+            }
+            else
+            {
+                data[index++] = 0; // red
+            }
+            data[index++] = 0; // green
+            data[index++] = 0; // blue
+            data[index++] = 255;
+        }
+    }
+    context.putImageData(image_data, 0, 0);
+    window.scrollTo(
+        document.documentElement.scrollWidth/2 - window.innerWidth/2, 
+        document.documentElement.scrollHeight/2 - window.innerHeight/2
+    );
+}
+
+
+
+
+
+
 
 function render()
 {
@@ -25,30 +87,32 @@ function render()
 
     context.save();
     context.translate(canvas.width/2, canvas.height/2);
-    context.scale(frame.scale, frame.scale);
+    context.scale(frame_scale, frame_scale);
 
     context.fillStyle = 'red';
-    var dx = 1/frame.scale * 2;
-    var dy = 1/frame.scale * 2;
-    var size_x = 1/frame.scale * canvas.width/2;
-    var size_y = 1/frame.scale * canvas.height/2;
+    var dx = 1/frame_scale * 2;
+    var dy = 1/frame_scale * 2;
+    var size_x = 1/frame_scale * canvas.width/2;
+    var size_y = 1/frame_scale * canvas.height/2;
+    context.beginPath();
     for (var pixel_x = -size_x; pixel_x < size_x; pixel_x += dx)
     {
         for (var pixel_y = -size_y; pixel_y < size_y; pixel_y += dy)
         {
             var vector = {
-                x: frame.x.x * pixel_x + frame.y.x * pixel_y,
-                y: frame.x.y * pixel_x + frame.y.y * pixel_y,
-                z: frame.x.z * pixel_x + frame.y.z * pixel_y
+                x: frame_x.x * pixel_x + frame_y.x * pixel_y,
+                y: frame_x.y * pixel_x + frame_y.y * pixel_y,
+                z: frame_x.z * pixel_x + frame_y.z * pixel_y
             }
-            var point = math.exponential_fast(frame.point, vector);
+            var point = math.exponential_fast(frame_point, vector);
             var inner = point.x * disc.x + point.y * disc.y + point.z * disc.z;
             if (Math.acos(Math.abs(inner)) < disc_radius)
             {
-                context.fillRect(pixel_x, pixel_y, dx, dy);
+                context.rect(pixel_x, pixel_y, dx, dy);
             }
         }
     }
+    context.fill();
 
     context.restore();
     window.scrollTo(
@@ -64,47 +128,48 @@ var scaling = 1.01;
 setInterval(function() {
     /* Move left */
     if (keys[65]) {
-        var tangent = math.scale(frame.x, -speed);
-        var frame_point = math.exponential(frame.point, tangent);
-        var frame_x = math.transport(frame.point, tangent, frame.x);
-        frame.point = frame_point;
-        frame.x = frame_x;
+        var tangent = math.scale(frame_x, -speed);
+        var frame_new_point = math.exponential(frame_point, tangent);
+        var frame_new_x = math.transport(frame_point, tangent, frame_x);
+        frame_point = frame_new_point;
+        frame_x = frame_new_x;
     }
     /* Move right */
     if (keys[68]) {
-        var tangent = math.scale(frame.x, speed);
-        var frame_point = math.exponential(frame.point, tangent);
-        var frame_x = math.transport(frame.point, tangent, frame.x);
-        frame.point = frame_point;
-        frame.x = frame_x;
+        var tangent = math.scale(frame_x, speed);
+        var frame_new_point = math.exponential(frame_point, tangent);
+        var frame_new_x = math.transport(frame_point, tangent, frame_x);
+        frame_point = frame_new_point;
+        frame_x = frame_new_x;
     }
     /* Move up */
     if (keys[83]) {
-        var tangent = math.scale(frame.y, speed);
-        var frame_point = math.exponential(frame.point, tangent);
-        var frame_y = math.transport(frame.point, tangent, frame.y);
-        frame.point = frame_point;
-        frame.y = frame_y;
+        var tangent = math.scale(frame_y, speed);
+        var frame_new_point = math.exponential(frame_point, tangent);
+        var frame_new_y = math.transport(frame_point, tangent, frame_y);
+        frame_point = frame_new_point;
+        frame_y = frame_new_y;
     }
     /* Move down */
     if (keys[87]) {
-        var tangent = math.scale(frame.y, -speed);
-        var frame_point = math.exponential(frame.point, tangent);
-        var frame_y = math.transport(frame.point, tangent, frame.y);
-        frame.point = frame_point;
-        frame.y = frame_y;
+        var tangent = math.scale(frame_y, -speed);
+        var frame_new_point = math.exponential(frame_point, tangent);
+        var frame_new_y = math.transport(frame_point, tangent, frame_y);
+        frame_point = frame_new_point;
+        frame_y = frame_new_y;
     }
     /* Zoom in */
     if (keys[81]) {
-        if (frame.scale > .13) {
-            frame.scale /= scaling;
+        if (frame_scale > .13) {
+            frame_scale /= scaling;
         }
     }
     /* Zoom out */
     if (keys[69]) {
-        frame.scale *= scaling;
+        frame_scale *= scaling;
     }
-    render();
+    //render();
+    render_pixel();
 }, 1000/60);
 
 var keys = {};
@@ -117,6 +182,6 @@ addEventListener('keyup', function(event) {
 
 /* Zoom in and out using mouse wheel */
 addEventListener('mousewheel', function(event) {
-    frame.scale *= Math.exp(-event.wheelDelta / 10000);
+    frame_scale *= Math.exp(-event.wheelDelta / 10000);
     event.preventDefault();
 });
